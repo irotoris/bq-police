@@ -9,7 +9,7 @@ Sample Slack alert.
 ## Architecture
 
 ```
-BigQUery AuditLog --> Cloud PubSub --> Cloud Functions(filter and notify) --> Slack
+BigQuery Log(Cloud Logging) --> Cloud PubSub --> Cloud Functions(filter and notify) --> Slack
 ```
 
 ## How to use
