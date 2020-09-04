@@ -23,7 +23,7 @@ BigQuery Log(Cloud Logging) --> Cloud PubSub --> Cloud Functions(filter and noti
 
 ### Settings
 
-Set your config and customize message in [`.src/config.py`](.src/config.py)
+Set your config and customize message in [`./src/config.py`](./src/config.py)
 
 ```python
 SLACK_ICON_EMOJI  = ':male-police-officer:'
