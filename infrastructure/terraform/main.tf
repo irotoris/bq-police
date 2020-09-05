@@ -39,7 +39,7 @@ data "archive_file" "local_function_source" {
 }
 
 resource "google_storage_bucket_object" "deploy_archive" {
-  name   = "functions.zip"
+  name   = "functions.${data.archive_file.local_function_source.output_md5}.zip"
   bucket = google_storage_bucket.deploy_bucket.name
   source = data.archive_file.local_function_source.output_path
 }

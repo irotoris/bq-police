@@ -19,7 +19,7 @@ def is_alert(log_dict, threshold):
     return False
 
 
-def parse_alert_message_text(log_dict, threshold):
+def parse_alert_job_info(log_dict, threshold):
     user_email = log_dict['protoPayload']['authenticationInfo']['principalEmail']
     total_slot_ms = int(log_dict['protoPayload']['serviceData']['jobCompletedEvent']['job']['jobStatistics'].get('totalSlotMs', '0'))
     total_processed_bytes = int(log_dict['protoPayload']['serviceData']['jobCompletedEvent']['job']['jobStatistics'].get('totalProcessedBytes', '0'))
@@ -36,13 +36,13 @@ def parse_alert_message_text(log_dict, threshold):
     end_time_dt = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S.%f%z')
     duration_dt = end_time_dt - creation_time_dt
     duration_minutes = duration_dt.total_seconds()
-    alert_message_text = f"JobId: <{job_result_url}|{project_id}:{location}.{job_id}>" + "\n" + \
+    alert_job_info_text = f"JobId: <{job_result_url}|{project_id}:{location}.{job_id}>" + "\n" + \
                          f"TotalSlotMs: {total_slot_ms} (AlertThreshold: {threshold['total_slot_ms']})" + "\n" + \
                          f"TotalProcessedBytes: {total_processed_bytes_gb:.02f}GB (AlertThreshold: {threshold['total_processed_bytes']/1000/1000/1000/1000}TB)" + "\n" + \
                          f"TotalBilledBytes: {total_billed_bytes_gb:.02f}GB (AlertThreshold: {threshold['total_billed_bytes']/1000/1000/1000/1000}TB)" + "\n" + \
                          f"DurationTime: {duration_minutes}sec" + "\n" + \
                          f"UserEmail: {user_email}"
-    return alert_message_text
+    return alert_job_info_text
 
 
 def post_slack(alert_text):
@@ -89,5 +89,5 @@ def run(event, context):
     }
     message = json.loads(base64.b64decode(event['data']).decode('utf-8'))
     if is_alert(message, alert_threshold):
-        alert_text = parse_alert_message_text(message, alert_threshold)
-        post_slack(alert_text)
+        alert_job_info_text = parse_alert_job_info(message, alert_threshold)
+        post_slack(alert_job_info_text)
