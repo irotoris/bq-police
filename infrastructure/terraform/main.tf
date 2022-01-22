@@ -2,14 +2,14 @@
 # log sink to pubsub
 #####################
 resource "google_logging_project_sink" "log_sink" {
-  name = var.module_name
+  name        = var.module_name
   destination = "pubsub.googleapis.com/${google_pubsub_topic.log_sink.id}"
-  filter = <<-EOF
+  filter      = <<-EOF
 　resource.type="bigquery_resource"
   protoPayload.methodName="jobservice.jobcompleted"
   protoPayload.serviceData.jobCompletedEvent.eventName="query_job_completed"
   EOF
-  
+
   unique_writer_identity = true
 }
 
@@ -19,9 +19,9 @@ resource "google_pubsub_topic" "log_sink" {
 
 resource "google_pubsub_topic_iam_member" "log_sink" {
   project = google_pubsub_topic.log_sink.project
-  topic = google_pubsub_topic.log_sink.name
-  role = "roles/editor"
-  member = google_logging_project_sink.log_sink.writer_identity
+  topic   = google_pubsub_topic.log_sink.name
+  role    = "roles/editor"
+  member  = google_logging_project_sink.log_sink.writer_identity
 }
 
 
@@ -29,7 +29,8 @@ resource "google_pubsub_topic_iam_member" "log_sink" {
 # functions
 ##################
 resource "google_storage_bucket" "deploy_bucket" {
-  name = "${var.project_id}-${var.module_name}-deploy"
+  name        = "${var.project_id}-${var.module_name}-deploy"
+  location    = "us"
 }
 
 data "archive_file" "local_function_source" {
@@ -48,7 +49,7 @@ resource "google_cloudfunctions_function" "function" {
   name        = var.module_name
   region      = "us-central1"
   description = "real-time query performance and billing alert"
-  runtime     = "python37"
+  runtime     = "python39"
 
   available_memory_mb   = 128
   source_archive_bucket = google_storage_bucket.deploy_bucket.name
@@ -69,6 +70,6 @@ resource "google_cloudfunctions_function" "function" {
   }
 
   depends_on = [
-      google_storage_bucket_object.deploy_archive
+    google_storage_bucket_object.deploy_archive
   ]
 }

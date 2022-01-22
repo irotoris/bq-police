@@ -14,8 +14,8 @@ Sample Slack alert.
 
 ### Requirements
 
-- Terraform 0.12
-- Python 3.7
+- Terraform 0.13 or later
+- Python 3.9
 - google-cloud-sdk
 - Slack Webhook URL
 

@@ -82,6 +82,7 @@ def post_slack(alert_text):
 
 
 def run(event, context):
+    print(event)
     alert_threshold = {
         'total_slot_ms': config.SLOT_ALERT_THRESHOLD,
         'total_processed_bytes': config.PROCESSED_BYTE_ALERT_THRESHOLD,
